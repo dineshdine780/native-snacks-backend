@@ -15,6 +15,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  process.env.FRONTEND_URL,
+  process.env.ADMIN_FRONTEND_URL,
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+  })
+);
+
+
 // Product Routes
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
