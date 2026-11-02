@@ -8,6 +8,13 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      default: null,
+      index: true,
+    }, 
+
     customerName: {
       type: String,
       required: true,

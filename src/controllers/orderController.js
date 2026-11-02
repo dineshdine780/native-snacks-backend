@@ -152,15 +152,19 @@ const createOrder = async (req, res) => {
 
     // Create order
     const order = await Order.create({
-      orderId,
-      customerName: customerName.trim(),
-      customerPhone: customerPhone.trim(),
-      customerAddress: customerAddress.trim(),
-      paymentMethod: paymentMethod || "COD",
-      items: orderItems,
-      totalAmount: Number(totalAmount.toFixed(2)),
-      notes: typeof notes === "string" ? notes.trim() : "",
-    });
+  orderId,
+
+  // Link the order to the authenticated customer
+  customerId: req.customer.id,
+
+  customerName: customerName.trim(),
+  customerPhone: customerPhone.trim(),
+  customerAddress: customerAddress.trim(),
+  paymentMethod: paymentMethod || "COD",
+  items: orderItems,
+  totalAmount: Number(totalAmount.toFixed(2)),
+  notes: typeof notes === "string" ? notes.trim() : "",
+});
 
     // Reduce stock in grams
     for (const [productId, requiredStock] of stockRequirements) {
@@ -243,6 +247,30 @@ const getOrders = async (req, res) => {
   }
 };
 
+
+// Get orders belonging only to the logged-in customer
+const getMyOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({
+      customerId: req.customer.id,
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: orders.length,
+      data: orders,
+    });
+  } catch (error) {
+    console.error("Get customer orders error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch your orders",
+    });
+  }
+};
+
+
 // Update Order Status
 const updateOrderStatus = async (req, res) => {
   try {
@@ -291,5 +319,6 @@ const updateOrderStatus = async (req, res) => {
 module.exports = {
   createOrder,
   getOrders,
+  getMyOrders,
   updateOrderStatus,
 };

@@ -8,11 +8,10 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const authRoutes = require("./routes/authRoutes");
-
+const customerAuthRoutes = require("./routes/customerAuthRoutes");
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 
 
@@ -36,6 +35,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/customers/auth", customerAuthRoutes);
 
 
 // Test route
